@@ -82,8 +82,12 @@ def init():
     """Create database."""
     click.secho('Creating database {0}'.format(_db.engine.url),
                 fg='green')
-    if not database_exists(str(_db.engine.url)):
-        create_database(str(_db.engine.url))
+    from sqlalchemy import create_engine
+    engine = create_engine(str(_db.engine.url), pool_size=20, max_overflow=10, pool_timeout=120)
+    if not database_exists(engine.url):
+        create_database(engine.url)
+    #if not database_exists(str(_db.engine.url)):
+    #    create_database(str(_db.engine.url))
 
 
 @db.command()
